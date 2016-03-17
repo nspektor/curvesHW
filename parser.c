@@ -74,10 +74,10 @@ void parse_file ( char * filename,
   
   clear_screen(s);
 
-  if ( strcmp(filename, "stdin") == 0 ) 
+  if ( strcmp(filename, "stdin") == 0 ) //if filename is stdin?
     f = stdin;
   else
-    f = fopen(filename, "r");
+    f = fopen(filename, "r");//if it is a file
   
   while ( fgets(line, 255, f) != NULL ) {
     line[strlen(line)-1]='\0';
@@ -86,3 +86,16 @@ void parse_file ( char * filename,
 }
 
   
+void c (int cx, int cy, int r){
+  // center is (cx, cy) and circle has radius r
+
+}
+
+void h(int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3){
+  //curve is between (x0, y0) and (x2, y2)
+  //(x0, y-0) and (x3, y3) calculate rates of change at endpoints
+}
+
+void b( int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3){
+  //curve drawn between (x0, y0) and (x3, y3)
+}
