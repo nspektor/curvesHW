@@ -82,7 +82,114 @@ void parse_file ( char * filename,
   while ( fgets(line, 255, f) != NULL ) {
     line[strlen(line)-1]='\0';
     printf(":%s:\n",line);  
-  }
+    
+    if(strcmp(line, "quit") == 0){
+      exit(0);
+    }
+    else if (strcmp(line, "line") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+
+      char * line_points[6];
+      int i;
+      line_points[0] = strtok(line, " "); //getting from one point in the line to the next, separated by spaces
+      for(i = 0; i < 5; i++)
+	line_points[i+1] = strtok(NULL, " ");
+      //atof converts strings to doubles
+      add_edge(pm, atof(points[0]), atof(points[1]), atof(points[2]), atof(points[3]), atof(points[4]), atof(points[5]));
+    }
+    else if (strcmp(line, "circle") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+      char * points[3];
+      int i;
+      points[0] = strtok(line, " "); //getting from one point in the line to the next, separated by spaces                                       
+      for(i = 0; i < 3; i++)
+	points[i+1] = strtok(NULL, " ");
+      //atof converts strings to doubles                                       
+      add_circle(pm, atof(points[0]), atof(points[1]), atof(points[2]));
+    }
+    else if (strcmp(line, "hermite") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+      char * points[8];
+      int i;
+      points[0] = strtok(line, " "); //getting from one point in the line to the next, separated by spaces                                       
+      for(i = 0; i < 8; i++)
+	points[i+1] = strtok(NULL, " ");
+      //atof converts strings to doubles                                       
+      add_curve(pm, atof(points[0]), atof(points[1]), atof(points[2]), atof(points[3]), atof(points[4]), atof(points[5]), atof(points[6]), atof(points[7]));
+    }
+    
+    else if (strcmp(line, "bezier") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+
+      char * points[8];
+      int i;
+      points[0] = strtok(line, " "); //getting from one point in the line to the next, separated by spaces                                       
+	for(i = 0; i < 8; i++)
+	  points[i+1] = strtok(NULL, " ");
+	//atof converts strings to doubles                                       
+	add_curve(pm, atof(points[0]), atof(points[1]), atof(points[2]), atof(points[3]), atof(points[4]), atof(points[5]), atof(points[6]), atof(points[7]));
+    }
+    else if(strcmp(line, "ident") ==0){
+      ident(transform);
+    }
+    else if (strcmp(line, "translate") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+
+      char *x, *y, *z;
+
+      x = strtok(line, " ");
+      y = strtok(NULL, " ");
+      z = strtok(NULL, " ");
+
+      transform = make_translate(atof(x), atof(y), atof(z));
+    }
+    else if (strcmp(line, "scale") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+      char *x, *y, *z;
+
+      x = strtok(line, " ");
+      y = strtok(NULL, " ");
+      z = strtok(NULL, " ");
+
+      transform = make_scale(atof(x), atof(y), atof(z));
+    }
+    else if (strcmp(line, "xrotate") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+      
+      matrix_mult(make_rotX(M_PI * atof(line)/180), transform);
+    }
+    else if (strcmp(line, "yrotate") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+      matrix_mult(make_rotY(M_PI * atof(line)/180), transform);
+    }
+    else if (strcmp(line, "zrotate") == 0) {
+      fgets(line, 255, f);
+      line[strlen(line) - 1] = '\0';
+      matrix_mult(make_rotZ(M_PI * atof(line)/180), transform);
+    }
+    else if (strcmp(line, "apply") == 0) {
+      matrix_mult(transform, pm);
+    }
+    else if (strcmp(line, "display") == 0) {
+      color c;
+      c.red=0;
+      c.green=250;
+      c.blue=0;
+      draw_lines(pm, s, c);
+      display(s);
+      clear_screen(s);
+    }
+    else if (strcmp(line, "save") == 0) {
+      save_extension(s, "curves.png");
+    }
 }
 
   
