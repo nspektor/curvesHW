@@ -23,6 +23,12 @@
 void add_circle( struct matrix * points, 
 		 double cx, double cy, 
 		 double r, double step ) {
+  double p, steps;
+  steps = 1.0/step;
+
+  for( p =0; p < 1; p ++ steps){
+    add_edge(points, r*cos(p*M_PI*2) + cx, r*sin(p*M_PI*2)+cy, 0, r*cos(2 * M_PI * (p+steps)) + cx, r*sin(2 * M_PI * (p+steps)) + cy, 0);
+  }
 }
 
 /*======== void add_curve() ==========
@@ -52,6 +58,23 @@ void add_curve( struct matrix *points,
 		double x2, double y2, 
 		double x3, double y3, 
 		double step, int type ) {
+  double t;
+
+  if (type == HERMITE_MODE) {
+    struct matrix * x_val = generate_curve_coefs( x0, x2, x1, x3, HERMITE_MODE);
+    struct matrix * y_val = generate_curve_coefs( y0, y2, y1, y3, HERMITE_MODE);
+    for (t = 0; t < 1; t += 1/step) {
+      add_edge(points, x_val->m[0][0]*t*t*t + x_val->m[1][0]*t*t + x_val->m[2][0]*t + x_val->m[3][0], y_val->m[0][0]*t*t*t + y_val->m[1][0]*t*t + y_val->m[2][0]*t + y_val->m[3][0], 0, x_val->m[0][0]*t*t*t + x_val->m[1][0]*t*t + x_val->m[2][0]*t + x_val->m[3][0], y_val->m[0][0]*t*t*t + y_val->m[1][1]*t*t + y_val->m[2][1]*t + y_val->m[3][1], 0);
+    }
+  }
+  else{
+    struct matrix * x_val = generate_curve_coefs( x0, x1, x2, x3, BEZIER_MODE);
+    struct matrix * y_val = generate_curve_coefs( y0, y1, y2, y3, BEZIER_MODE);
+    for (t = 0; t < 1; t += 1/step) {
+      add_edge(points, x_val->m[0][0]*t*t*t + x_val->m[1][0]*t*t + x_val->m[2][0]*t + x_val->m[3][0], y_val->m[0][0]*t*t*t + y_val->m[1][0]*t*t + y_val->m[2][0]*t + y_val->m[3][0], 0, x_val->m[0][0]*t*t*t + x_val->m[1][0]*t*t + x_val->m[2][0]*t + x_val->m[3][0], y_val->m[0][0]*t*t*t + y_val->m[1][0]*t*t + y_val->m[2][0]*t + y_val->m[3][0], 0);
+    }
+  }
+
 }
 
 /*======== void add_point() ==========
